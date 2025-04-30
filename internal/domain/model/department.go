@@ -1,4 +1,4 @@
-package domain
+package model
 
 type Department struct {
 	ID   int

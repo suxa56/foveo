@@ -1,4 +1,4 @@
-package domain
+package model
 
 type Role struct {
 	ID   int
