@@ -1,0 +1,64 @@
+services:
+  app:
+    container_name: go_app
+    build: .
+    ports:
+      - "8090:8090"
+    depends_on:
+      - postgres
+      - migrate
+      - mongo
+    networks:
+      - backend_net
+    environment:
+      - POSTGRES_DSN=postgres://postgres:postgres@postgres:5432/appdb?sslmode=disable
+      - MONGO_URI=mongodb://mongo:27017/logsdb
+
+  postgres:
+    image: postgres:16
+    container_name: app_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend_net
+
+  mongo:
+    image: mongo:7
+    container_name: app_mongo
+    restart: always
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - backend_net
+
+  migrate:
+    image: migrate/migrate
+    container_name: app_migrate
+    command: [
+      "-path", "/migrations",
+      "-database", "postgresql://postgres:postgres@db:5432/appdb?sslmode=disable",
+      "up"
+    ]
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      - postgres
+    networks:
+      - backend_net
+
+networks:
+  backend_net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  mongodata:
