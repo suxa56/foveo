@@ -40,7 +40,7 @@ services:
     container_name: app_migrate
     command: [
       "-path", "/migrations",
-      "-database", "postgresql://postgres:postgres@db:5432/appdb?sslmode=disable",
+      "-database", "postgresql://postgres:postgres@postgres:5432/appdb?sslmode=disable",
       "up"
     ]
     volumes:

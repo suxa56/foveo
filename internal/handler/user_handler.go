@@ -38,6 +38,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	err = h.userService.Register(r.Context(), req)
 	if err != nil {
 		http.Error(w, "failed to create user", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
