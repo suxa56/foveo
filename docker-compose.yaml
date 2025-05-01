@@ -2,7 +2,7 @@ services:
   app:
     container_name: go_app
     build: .
-    env_file: .env
+    env_file: .env.prod
     ports:
       - "8090:8090"
     depends_on:

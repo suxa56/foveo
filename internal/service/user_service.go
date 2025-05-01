@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"foveo/internal/domain/model"
+	"foveo/internal/domain/dto"
 	"foveo/internal/repository"
 )
 
 type IUserService interface {
-	Register(ctx context.Context, user *model.User) error
+	Register(ctx context.Context, requestDto dto.RegisterRequest) error
 }
 
 type UserService struct {
@@ -18,6 +18,7 @@ func InitUserService(userRepo repository.IUserRepo) *UserService {
 	return &UserService{userRepo: userRepo}
 }
 
-func (u *UserService) Register(ctx context.Context, user *model.User) error {
-	return u.Register(ctx, user)
+func (s *UserService) Register(ctx context.Context, requestDto dto.RegisterRequest) error {
+	//return s.userRepo.Create(ctx, user)
+	return nil
 }

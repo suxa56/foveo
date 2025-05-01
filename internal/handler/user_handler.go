@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
+	"foveo/internal/domain/dto"
 	"foveo/internal/service"
 	"net/http"
 )
@@ -14,10 +17,32 @@ func InitUserHandler(userService service.IUserService) *UserHandler {
 }
 
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	// парсим запрос, валидируем
-	// вызываем h.userService.CreateUser(...)
-	// возвращаем ответ
-	w.Write([]byte("create user"))
+	var req dto.RegisterRequest
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	errors := req.IsValid()
+	if len(errors) > 0 {
+		for _, err := range errors {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	// Передаем в сервис
+	err = h.userService.Register(r.Context(), req)
+	if err != nil {
+		http.Error(w, "failed to create user", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprint(w, "User registered successfully")
 }
 
 func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
