@@ -30,9 +30,9 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	errors := req.IsValid()
-	if len(errors) > 0 {
-		for _, err := range errors {
+	errs := req.IsValid()
+	if len(errs) > 0 {
+		for _, err := range errs {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 		return
