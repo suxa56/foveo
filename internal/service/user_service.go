@@ -12,6 +12,7 @@ type IUserService interface {
 	Register(ctx context.Context, requestDto dto.RegisterRequest) error
 	GetList(ctx context.Context) ([]model.User, error)
 	GetByID(ctx context.Context, id int) (*model.User, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type UserService struct {
@@ -58,4 +59,8 @@ func (s *UserService) GetList(ctx context.Context) ([]model.User, error) {
 
 func (s *UserService) GetByID(ctx context.Context, id int) (*model.User, error) {
 	return s.userRepo.GetByID(ctx, id)
+}
+
+func (s *UserService) Delete(ctx context.Context, id int) error {
+	return s.userRepo.Delete(ctx, id)
 }

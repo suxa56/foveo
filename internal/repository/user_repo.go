@@ -11,6 +11,7 @@ type IUserRepo interface {
 	Create(ctx context.Context, user *model.User) error
 	GetList(ctx context.Context) ([]model.User, error)
 	GetByID(ctx context.Context, id int) (*model.User, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type UserRepo struct {
@@ -142,4 +143,13 @@ func (r *UserRepo) GetByID(ctx context.Context, id int) (*model.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *UserRepo) Delete(ctx context.Context, id int) error {
+	query := `DELETE FROM users WHERE id = $1`
+	_, err := r.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
