@@ -10,6 +10,8 @@ import (
 
 type IUserService interface {
 	Register(ctx context.Context, requestDto dto.RegisterRequest) error
+	GetList(ctx context.Context) ([]model.User, error)
+	GetByID(ctx context.Context, id int) (*model.User, error)
 }
 
 type UserService struct {
@@ -48,4 +50,12 @@ func (s *UserService) Register(ctx context.Context, requestDto dto.RegisterReque
 		Roles:              nil,
 	}
 	return s.userRepo.Create(ctx, user)
+}
+
+func (s *UserService) GetList(ctx context.Context) ([]model.User, error) {
+	return s.userRepo.GetList(ctx)
+}
+
+func (s *UserService) GetByID(ctx context.Context, id int) (*model.User, error) {
+	return s.userRepo.GetByID(ctx, id)
 }

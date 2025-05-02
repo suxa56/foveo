@@ -15,6 +15,7 @@ func NewRouter(handler *handler.Handler) http.Handler {
 	// user-related routes
 	r.Route("/api/users", func(r chi.Router) {
 		r.Post("/", handler.User.Create)
+		r.Get("/list", handler.User.GetList)
 		r.Get("/{id}", handler.User.GetByID)
 		r.Put("/{id}", handler.User.Update)
 		r.Delete("/{id}", handler.User.Delete)

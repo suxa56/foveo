@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"foveo/internal/domain/dto"
 	"foveo/internal/service"
+	"github.com/go-chi/chi/v5"
 	"net/http"
+	"strconv"
 )
 
 type UserHandler struct {
@@ -46,9 +50,43 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "User registered successfully")
 }
 
+func (h *UserHandler) GetList(w http.ResponseWriter, r *http.Request) {
+	list, err := h.userService.GetList(r.Context())
+	if err != nil {
+		http.Error(w, "failed to get users", http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(list); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	// получение по id
-	w.Write([]byte("get user by id"))
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.userService.GetByID(r.Context(), id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "User not found", http.StatusNotFound)
+		} else {
+			http.Error(w, "Server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
