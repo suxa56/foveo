@@ -3,7 +3,7 @@ package model
 import "time"
 
 type User struct {
-	ID                 int
+	ID                 int64
 	FirstName          string
 	Surname            string
 	Patronymic         string
@@ -24,4 +24,5 @@ type User struct {
 	PassportIssueDate  time.Time
 	PassportExpiryDate time.Time
 	Roles              []Role
+	PassHash           string
 }

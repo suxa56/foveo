@@ -32,6 +32,9 @@ func (r *RegisterRequest) IsValid() []error {
 	if r.Surname == "" {
 		errors = append(errors, fmt.Errorf("surname is required"))
 	}
+	if r.Email == "" {
+		errors = append(errors, fmt.Errorf("email is required"))
+	}
 
 	return errors
 }
