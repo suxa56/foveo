@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	cfg := config.Load()
+	cfg := config.MustLoad()
 
 	db, err := sqlx.Open("postgres", cfg.PostgresDSN)
 	if err != nil {
